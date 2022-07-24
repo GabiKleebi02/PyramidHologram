@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pyramid Hologram</title>
+
+    <style>
+        .display {width: 200px; height: 200px; margin: -2px;}
+        .container {padding: 20px; text-align: center; align-items: center; background-color: rgb(20, 20, 20);}
+        .framed {border: 1px solid black; margin: 10px 0; padding: 5px;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <canvas id="topCanvas" class="display" width="200px" height="200px"></canvas>
+
+        <br>
+
+        <canvas id="leftCanvas" class="display" width="200px" height="200px"></canvas>
+        <canvas id="middleCanvas" class="display" width="200px" height="200px"></canvas>
+        <canvas id="rightCanvas" class="display" width="200px" height="200px"></canvas>
+
+        <br>
+
+        <canvas id="bottomCanvas" class="display" width="200px" height="200px"></canvas>
+    </div>
+
+    <input type="file" class="framed" id="fileChooser" accept="image/png, image/jpeg" onchange="loadImage(event)">
+
+    <script src="display.js"></script>
+</body>
+</html>
