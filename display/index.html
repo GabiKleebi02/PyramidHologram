@@ -6,28 +6,39 @@
     <title>Pyramid Hologram</title>
 
     <style>
-        .display {width: 200px; height: 200px; margin: -2px;}
-        .container {padding: 20px; text-align: center; align-items: center; background-color: rgb(20, 20, 20);}
-        .framed {border: 1px solid black; margin: 10px 0; padding: 5px;}
+        .framed {border: 1px solid black; margin: 10px 0; padding: 10px;}
+        .center {text-align: center;}
+        .wideSlider {max-width: 80vw; width: 400px;}
     </style>
 </head>
 <body>
-    <div class="container">
-        <canvas id="topCanvas" class="display" width="200px" height="200px"></canvas>
-
-        <br>
-
-        <canvas id="leftCanvas" class="display" width="200px" height="200px"></canvas>
-        <canvas id="middleCanvas" class="display" width="200px" height="200px"></canvas>
-        <canvas id="rightCanvas" class="display" width="200px" height="200px"></canvas>
-
-        <br>
-
-        <canvas id="bottomCanvas" class="display" width="200px" height="200px"></canvas>
+    <div class="center">
+        <canvas id="mainCanvas" width="600px" height="600px"></canvas>
     </div>
 
-    <input type="file" class="framed" id="fileChooser" accept="image/png, image/jpeg" onchange="loadImage(event)">
+    <br>
 
+    <div class="framed">
+        <label for="fileChooser">Choose an image to display:</label> <br>
+        <input type="file" id="fileChooser" accept="image/png, image/jpeg" onchange="loadImage(event)">
+    </div>
+    
+    <div class="framed">
+        <label for="spacingSlider">Set the size of the center square here:</label> <br>
+        <input type="range" id="spacingSlider" class="wideSlider" min="0" max="600" value="200">
+        <input type="text" id="spacingValue" readonly>
+    </div>
+
+    <div class="framed">
+        <label for="imageZoom">Set the size of the image/Zoom in or out:</label> <br>
+        <input type="range" id="imageZoom" class="wideSlider" min="20" max="900" value="600">
+    </div>
+
+    <div class="framed">
+        <label for="imagePosition">Change the position of the image here:</label> <br>
+        <input type="range" id="imagePosition" class="wideSlider" min="-400" max="200" value="0">
+    </div>
+    
     <script src="display.js"></script>
 </body>
 </html>
