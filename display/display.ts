@@ -23,12 +23,26 @@ window.onload = function() {
         return;
     }
 
+    setCanvasSizeMax(canvas);
+
     //fill the canvas black
     context.fillStyle = "#000000";
     context.fillRect(0, 0, canvas.width, canvas.height);
 
     //----- prepare other things -----
     spacingValueShow.value = "" + getInnerSpacing();
+}
+
+function setCanvasSizeMax(canvas:HTMLCanvasElement) {
+    let container:HTMLDivElement = document.getElementById('canvasBackground') as HTMLDivElement;
+
+    let maxSize:number = Math.min(container.clientWidth, container.clientHeight);
+
+    console.log(window.innerWidth + " " + window.innerHeight + " " + maxSize);
+    
+
+    canvas.width = maxSize;
+    canvas.height = maxSize;
 }
 
 //onchange-event-listener for the image upload button

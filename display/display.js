@@ -18,12 +18,20 @@ window.onload = function () {
         console.error("Canvas-context not supported!");
         return;
     }
+    setCanvasSizeMax(canvas);
     //fill the canvas black
     context.fillStyle = "#000000";
     context.fillRect(0, 0, canvas.width, canvas.height);
     //----- prepare other things -----
     spacingValueShow.value = "" + getInnerSpacing();
 };
+function setCanvasSizeMax(canvas) {
+    var container = document.getElementById('canvasBackground');
+    var maxSize = Math.min(container.clientWidth, container.clientHeight);
+    console.log(window.innerWidth + " " + window.innerHeight + " " + maxSize);
+    canvas.width = maxSize;
+    canvas.height = maxSize;
+}
 //onchange-event-listener for the image upload button
 function loadImage(event) {
     var inputElement = event.target;
