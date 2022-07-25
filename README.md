@@ -11,6 +11,5 @@ This project is about creating the illusion of holograms. For this we use a trun
 The principal this project is based on is the [*Pepper's Ghost effect*](https://en.wikipedia.org/wiki/Pepper%27s_ghost). In short, this is a technique with which you create the illusion of a hologram with just an image source (the display of your device) and a nearly transparent flat surface tilted above it. The light of the image will then reflect on the surface. If a person looks directly on the surface, he will see the background through it and the image shown on the display, but floating in the air. If you, for example, show a person standing in front of a black background on your device, the user will only see the person. This is, because black surfaces emit nearly no light, leading to no reflection on the reflectional surface.
 
 ## What will be added to this project in the future
-- the ability to change the size of the display areas and of the area in the middle
-- images will not be shown in squares anymore, but in trapezes filling the whole perimeter of the inner spacing
+- the ability to change the size of the display area
 - support for more sides to show the image &rarr; leading to more viewing angles
