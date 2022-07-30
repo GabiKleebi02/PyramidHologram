@@ -42,6 +42,10 @@ function setCanvasSizeMax(canvas) {
     canvas.width = maxSize;
     canvas.height = maxSize;
 }
+window.addEventListener('resize', function (event) {
+    setCanvasSizeMax(canvas);
+    drawImageOnCanvases();
+});
 //onchange-event-listener for the image upload button
 function loadImage(event) {
     var inputElement = event.target;
@@ -62,13 +66,13 @@ function loadImage(event) {
         var image = new Image();
         image.src = frEvent.target.result;
         image.onload = function (imageEvent) {
-            drawImageToCanvases(image);
+            drawImageOnCanvases(image);
         };
         lastLoadedImage = image;
     };
     filereader.readAsDataURL(file);
 }
-function drawImageToCanvases(image) {
+function drawImageOnCanvases(image) {
     if (image === void 0) { image = lastLoadedImage; }
     var context = canvas.getContext("2d");
     if (context == null)
@@ -149,12 +153,12 @@ function linkTwoInputs(input1, input2, drawImagesOnUpdate) {
     input1.addEventListener('input', function (event) {
         input2.value = input1.value;
         if (drawImagesOnUpdate)
-            drawImageToCanvases();
+            drawImageOnCanvases();
     });
     // oninput for second element
     input2.addEventListener('input', function (event) {
         input1.value = input2.value;
         if (drawImagesOnUpdate)
-            drawImageToCanvases();
+            drawImageOnCanvases();
     });
 }

@@ -53,6 +53,11 @@ function setCanvasSizeMax(canvas:HTMLCanvasElement) {
     canvas.height = maxSize;
 }
 
+window.addEventListener('resize', function(event) {
+    setCanvasSizeMax(canvas);
+    drawImageOnCanvases();
+})
+
 //onchange-event-listener for the image upload button
 function loadImage(event:Event) {    
     let inputElement = event.target as HTMLInputElement;
@@ -77,7 +82,7 @@ function loadImage(event:Event) {
         image.src = frEvent.target.result as string;
         
         image.onload = function(imageEvent) {
-            drawImageToCanvases(image);
+            drawImageOnCanvases(image);
         };
 
         lastLoadedImage = image;
@@ -86,7 +91,7 @@ function loadImage(event:Event) {
     filereader.readAsDataURL(file);    
 }
 
-function drawImageToCanvases(image:HTMLImageElement = lastLoadedImage) {
+function drawImageOnCanvases(image:HTMLImageElement = lastLoadedImage) {
     const context = canvas.getContext("2d");
 
     if(context == null) return;
@@ -191,13 +196,13 @@ function linkTwoInputs(input1:HTMLInputElement, input2:HTMLInputElement, drawIma
     input1.addEventListener('input', function(event) {
         input2.value = input1.value;
 
-        if(drawImagesOnUpdate) drawImageToCanvases();
+        if(drawImagesOnUpdate) drawImageOnCanvases();
     });
 
     // oninput for second element
     input2.addEventListener('input', function(event) {
         input1.value = input2.value;
 
-        if(drawImagesOnUpdate) drawImageToCanvases();
+        if(drawImagesOnUpdate) drawImageOnCanvases();
     });
 }
