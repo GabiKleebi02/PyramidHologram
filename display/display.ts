@@ -97,15 +97,17 @@ function drawImageOnCanvases(image:HTMLImageElement = lastLoadedImage) {
     if(context == null) return;
 
     //get the variables
-    const innerSpacing = getInnerSpacing(), // size of the polygon in the middle
-        outerSpacing = Math.sqrt(2 * Math.pow(canvas.width, 2)), // size of the polygon forming the outer perimeter to clip off images
-        imagePositionOffset = getImagePosition(), // value to move the image up and down
-        singleCanvasWidth = canvas.width, // width of the canvas for a each image (TODO: needs to be updated to side count)
-        singleCanvasHeight = canvas.height/2 - innerSpacing/2, // height of the canvas for each image
-        imageSize = getImageZoom(), // width and height of a single image (TODO: replace with multiplication of w and h of image with a factor)
-        totalCanvasSize = canvas.width, // width and height of the real canvas/HTML canvas element
-        sideAmount = getSideCount(), //stores how many sides the polygon has
-        angle = (2* Math.PI / sideAmount); //angle by which each image has to be rotated
+    const innerSpacing:number = getInnerSpacing(), // size of the polygon in the middle
+        outerSpacing:number = Math.sqrt(2 * Math.pow(canvas.width, 2)), // size of the polygon forming the outer perimeter to clip off images
+        imagePositionOffset:number = getImagePosition(), // value to move the image up and down
+        singleCanvasWidth:number = canvas.width, // width of the canvas for a each image (TODO: needs to be updated to side count)
+        singleCanvasHeight:number = canvas.height/2 - innerSpacing/2, // height of the canvas for each image
+        imageScale:number = getImageScale(), // scale of the image (100% = 1.0)
+        scaledImageWidth:number = image.width * imageScale,
+        scaledImageHeight:number = image.height * imageScale,
+        totalCanvasSize:number = canvas.width, // width and height of the real canvas/HTML canvas element
+        sideAmount:number = getSideCount(), //stores how many sides the polygon has
+        angle:number = (2* Math.PI / sideAmount); //angle by which each image has to be rotated
 
     // coords forming a trapez that clips each image; subtracting PI/2 because it has to start at the top of the circle and not on the right
     const innerClippingPointLeft:number[] = getPointOnCircle(innerSpacing, -angle/2 - Math.PI/2, totalCanvasSize/2),
@@ -137,10 +139,10 @@ function drawImageOnCanvases(image:HTMLImageElement = lastLoadedImage) {
         context.clip(clipMask);
 
         //move outwards
-        context.translate(0, singleCanvasHeight/2 - imageSize/2);
+        context.translate(0, singleCanvasHeight/2 - scaledImageHeight/2);
 
         //draw the image
-        context.drawImage(image, singleCanvasWidth/2-imageSize/2, singleCanvasHeight/2-imageSize/2 + imagePositionOffset, imageSize, imageSize);
+        context.drawImage(image, singleCanvasWidth/2-scaledImageWidth/2, singleCanvasHeight/2-scaledImageHeight/2 + imagePositionOffset, scaledImageWidth, scaledImageHeight);
 
         //end drawing
         context.restore();
@@ -167,11 +169,11 @@ function getInnerSpacing():number {
     return Number(spacingSlider.value);
 }
 
-function getImageZoom():number {
+function getImageScale():number {
     if(!imageZoomSlider)
-        return 600;
+        return 100;
 
-    return Number(imageZoomSlider.value);
+    return Number(imageZoomSlider.value) / 100;
 }
 
 function getImagePosition():number {

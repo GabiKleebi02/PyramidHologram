@@ -83,8 +83,8 @@ function drawImageOnCanvases(image) {
     imagePositionOffset = getImagePosition(), // value to move the image up and down
     singleCanvasWidth = canvas.width, // width of the canvas for a each image (TODO: needs to be updated to side count)
     singleCanvasHeight = canvas.height / 2 - innerSpacing / 2, // height of the canvas for each image
-    imageSize = getImageZoom(), // width and height of a single image (TODO: replace with multiplication of w and h of image with a factor)
-    totalCanvasSize = canvas.width, // width and height of the real canvas/HTML canvas element
+    imageScale = getImageScale(), // scale of the image (100% = 1.0)
+    scaledImageWidth = image.width * imageScale, scaledImageHeight = image.height * imageScale, totalCanvasSize = canvas.width, // width and height of the real canvas/HTML canvas element
     sideAmount = getSideCount(), //stores how many sides the polygon has
     angle = (2 * Math.PI / sideAmount); //angle by which each image has to be rotated
     // coords forming a trapez that clips each image; subtracting PI/2 because it has to start at the top of the circle and not on the right
@@ -109,9 +109,9 @@ function drawImageOnCanvases(image) {
         clipMask.closePath();
         context.clip(clipMask);
         //move outwards
-        context.translate(0, singleCanvasHeight / 2 - imageSize / 2);
+        context.translate(0, singleCanvasHeight / 2 - scaledImageHeight / 2);
         //draw the image
-        context.drawImage(image, singleCanvasWidth / 2 - imageSize / 2, singleCanvasHeight / 2 - imageSize / 2 + imagePositionOffset, imageSize, imageSize);
+        context.drawImage(image, singleCanvasWidth / 2 - scaledImageWidth / 2, singleCanvasHeight / 2 - scaledImageHeight / 2 + imagePositionOffset, scaledImageWidth, scaledImageHeight);
         //end drawing
         context.restore();
     }
@@ -131,10 +131,10 @@ function getInnerSpacing() {
         return 200;
     return Number(spacingSlider.value);
 }
-function getImageZoom() {
+function getImageScale() {
     if (!imageZoomSlider)
-        return 600;
-    return Number(imageZoomSlider.value);
+        return 100;
+    return Number(imageZoomSlider.value) / 100;
 }
 function getImagePosition() {
     if (!imagePosSlider)
