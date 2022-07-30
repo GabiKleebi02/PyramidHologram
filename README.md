@@ -13,4 +13,3 @@ The principal this project is based on is the [*Pepper's Ghost effect*](https://
 ## What will be added to this project in the future
 - add support for gif-files
 - (the ability to change the size of the display area)
-- add support for more sides to show the image &rarr; leading to more viewing angles
