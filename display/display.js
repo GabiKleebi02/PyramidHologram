@@ -14,7 +14,7 @@ linkTwoInputs(imageZoomSlider, imageZoomValue, true);
 linkTwoInputs(imagePosSlider, imagePosValue, true);
 linkTwoInputs(sideCountSlider, sideCountValue, true);
 //stores the image last selected by user
-var lastLoadedImage = new Image();
+var lastLoadedImages;
 window.onload = function () {
     //----- prepare the canvas -----
     if (document.getElementById('mainCanvas') == null) {
@@ -46,6 +46,8 @@ window.addEventListener('resize', function (event) {
     setCanvasSizeMax(canvas);
     drawImageOnCanvases();
 });
+//functions to load files selected by the user
+var loadedImagesCount;
 //onchange-event-listener for the image upload button
 function loadImage(event) {
     var inputElement = event.target;
@@ -54,26 +56,39 @@ function loadImage(event) {
         console.error("Error on loading the image!");
         return;
     }
-    //load the image
-    var file = inputElement.files[0];
-    var filereader = new FileReader();
-    filereader.onload = function (frEvent) {
-        if (frEvent.target == null) {
-            console.error('Error while loading image!');
-            return;
-        }
-        ;
-        var image = new Image();
-        image.src = frEvent.target.result;
-        image.onload = function (imageEvent) {
-            drawImageOnCanvases(image);
+    //delete all loaded images
+    lastLoadedImages = new Array();
+    loadedImagesCount = 0;
+    //read in every image
+    var selectedFiles = inputElement.files;
+    for (var i = 0; i < selectedFiles.length; i++) {
+        var file = selectedFiles.item(i);
+        if (!file)
+            break;
+        var filereader = new FileReader();
+        filereader.onload = function (frEvent) {
+            if (frEvent.target == null) {
+                console.error('Error while loading image!');
+                return;
+            }
+            ;
+            var image = new Image();
+            image.src = frEvent.target.result;
+            lastLoadedImages.push(image);
+            loadedImagesCountUp(selectedFiles.length);
         };
-        lastLoadedImage = image;
-    };
-    filereader.readAsDataURL(file);
+        filereader.readAsDataURL(file);
+    }
 }
-function drawImageOnCanvases(image) {
-    if (image === void 0) { image = lastLoadedImage; }
+//method to draw images only if all images were loaded
+function loadedImagesCountUp(imgArraySize) {
+    loadedImagesCount++;
+    if (loadedImagesCount == imgArraySize)
+        drawImageOnCanvases();
+}
+//function to draw all images in repeating order on the canvas
+function drawImageOnCanvases(images) {
+    if (images === void 0) { images = lastLoadedImages; }
     var context = canvas.getContext("2d");
     if (context == null)
         return;
@@ -84,7 +99,7 @@ function drawImageOnCanvases(image) {
     singleCanvasWidth = canvas.width, // width of the canvas for a each image (TODO: needs to be updated to side count)
     singleCanvasHeight = canvas.height / 2 - innerSpacing / 2, // height of the canvas for each image
     imageScale = getImageScale(), // scale of the image (100% = 1.0)
-    scaledImageWidth = image.width * imageScale, scaledImageHeight = image.height * imageScale, totalCanvasSize = canvas.width, // width and height of the real canvas/HTML canvas element
+    totalCanvasSize = canvas.width, // width and height of the real canvas/HTML canvas element
     sideAmount = getSideCount(), //stores how many sides the polygon has
     angle = (2 * Math.PI / sideAmount); //angle by which each image has to be rotated
     // coords forming a trapez that clips each image; subtracting PI/2 because it has to start at the top of the circle and not on the right
@@ -93,6 +108,8 @@ function drawImageOnCanvases(image) {
     resetCanvasContext(context, totalCanvasSize);
     //draw the images
     for (var i = 0; i < sideAmount; i++) {
+        //get the variables for each loop walkthrough
+        var image = getNextImage(lastLoadedImages, i), scaledImageWidth = image.width * imageScale, scaledImageHeight = image.height * imageScale;
         //start drawing
         context.save();
         //rotate around center
@@ -116,10 +133,17 @@ function drawImageOnCanvases(image) {
         context.restore();
     }
 }
+//calculate the position on a circle with a given radius by an angle
 function getPointOnCircle(r, theta, centerCoord) {
     var x = centerCoord + r * Math.cos(theta), y = centerCoord + r * Math.sin(theta);
     return [x, y];
 }
+//imagine the image array as a ring and get the image at a given index
+function getNextImage(images, index) {
+    var ringIndex = index % images.length;
+    return images[ringIndex];
+}
+//clear the canvas
 function resetCanvasContext(context, canvasSize) {
     context.clearRect(0, 0, canvasSize, canvasSize);
     context.beginPath();

@@ -17,7 +17,7 @@ linkTwoInputs(imagePosSlider, imagePosValue, true);
 linkTwoInputs(sideCountSlider, sideCountValue, true);
 
 //stores the image last selected by user
-let lastLoadedImage:HTMLImageElement = new Image();
+let lastLoadedImages:HTMLImageElement[];
 
 window.onload = function() {
     //----- prepare the canvas -----
@@ -58,6 +58,9 @@ window.addEventListener('resize', function(event) {
     drawImageOnCanvases();
 })
 
+//functions to load files selected by the user
+let loadedImagesCount:number;
+
 //onchange-event-listener for the image upload button
 function loadImage(event:Event) {    
     let inputElement = event.target as HTMLInputElement;
@@ -68,30 +71,48 @@ function loadImage(event:Event) {
         return;
     }
 
-    //load the image
-    const file = inputElement.files[0];
+    //delete all loaded images
+    lastLoadedImages = new Array() as HTMLImageElement[];
+    loadedImagesCount = 0;
     
-    const filereader = new FileReader();
-    filereader.onload = function(frEvent) {
-        if(frEvent.target == null) {
-            console.error('Error while loading image!');
-            return;
-        };
+    //read in every image
+    const selectedFiles:FileList = inputElement.files;
 
-        let image:HTMLImageElement = new Image();
-        image.src = frEvent.target.result as string;
+    for(let i = 0; i < selectedFiles.length; i++) {
+        let file = selectedFiles.item(i);
+
+        if(!file)
+            break;
+
+        const filereader = new FileReader();
+        filereader.onload = function(frEvent) {
+            if(frEvent.target == null) {
+                console.error('Error while loading image!');
+                return;
+            };
+
+            let image:HTMLImageElement = new Image();
+            image.src = frEvent.target.result as string;
+
+            lastLoadedImages.push(image);
+
+            loadedImagesCountUp(selectedFiles.length);
+        }
         
-        image.onload = function(imageEvent) {
-            drawImageOnCanvases(image);
-        };
-
-        lastLoadedImage = image;
+        filereader.readAsDataURL(file);
     }
-
-    filereader.readAsDataURL(file);    
 }
 
-function drawImageOnCanvases(image:HTMLImageElement = lastLoadedImage) {
+//method to draw images only if all images were loaded
+function loadedImagesCountUp(imgArraySize:number) {    
+    loadedImagesCount++;
+
+    if(loadedImagesCount == imgArraySize)
+        drawImageOnCanvases();
+}
+
+//function to draw all images in repeating order on the canvas
+function drawImageOnCanvases(images:HTMLImageElement[] = lastLoadedImages) {
     const context = canvas.getContext("2d");
 
     if(context == null) return;
@@ -103,8 +124,6 @@ function drawImageOnCanvases(image:HTMLImageElement = lastLoadedImage) {
         singleCanvasWidth:number = canvas.width, // width of the canvas for a each image (TODO: needs to be updated to side count)
         singleCanvasHeight:number = canvas.height/2 - innerSpacing/2, // height of the canvas for each image
         imageScale:number = getImageScale(), // scale of the image (100% = 1.0)
-        scaledImageWidth:number = image.width * imageScale,
-        scaledImageHeight:number = image.height * imageScale,
         totalCanvasSize:number = canvas.width, // width and height of the real canvas/HTML canvas element
         sideAmount:number = getSideCount(), //stores how many sides the polygon has
         angle:number = (2* Math.PI / sideAmount); //angle by which each image has to be rotated
@@ -120,6 +139,11 @@ function drawImageOnCanvases(image:HTMLImageElement = lastLoadedImage) {
 
     //draw the images
     for(let i = 0; i < sideAmount; i++) {
+        //get the variables for each loop walkthrough
+        const image:HTMLImageElement = getNextImage(lastLoadedImages, i),
+            scaledImageWidth:number = image.width * imageScale,
+            scaledImageHeight:number = image.height * imageScale;
+
         //start drawing
         context.save();
 
@@ -149,6 +173,7 @@ function drawImageOnCanvases(image:HTMLImageElement = lastLoadedImage) {
     }
 }
 
+//calculate the position on a circle with a given radius by an angle
 function getPointOnCircle(r:number, theta:number, centerCoord:number):number[] {
     let x:number = centerCoord + r * Math.cos(theta),
         y:number = centerCoord + r * Math.sin(theta);
@@ -156,6 +181,14 @@ function getPointOnCircle(r:number, theta:number, centerCoord:number):number[] {
     return [x, y];
 }
 
+//imagine the image array as a ring and get the image at a given index
+function getNextImage(images:HTMLImageElement[], index:number):HTMLImageElement {
+    const ringIndex:number = index % images.length;
+
+    return images[ringIndex];
+}
+
+//clear the canvas
 function resetCanvasContext(context:CanvasRenderingContext2D, canvasSize:number):void {
     context.clearRect(0, 0, canvasSize, canvasSize);
     context.beginPath();
