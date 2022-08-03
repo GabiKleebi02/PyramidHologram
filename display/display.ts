@@ -93,10 +93,12 @@ function loadImage(event:Event) {
 
             let image:HTMLImageElement = new Image();
             image.src = frEvent.target.result as string;
-
-            lastLoadedImages.push(image);
-
-            loadedImagesCountUp(selectedFiles.length);
+            
+            //after image has been loaded, check if all selected images where loaded and if so, then draw them
+            image.onload = function() {
+                lastLoadedImages.push(image);
+                loadedImagesCountUp(selectedFiles.length);
+            }
         }
         
         filereader.readAsDataURL(file);
