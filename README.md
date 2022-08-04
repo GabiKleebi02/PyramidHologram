@@ -14,7 +14,22 @@ The principal this project is based on is the [*Pepper's Ghost effect*](https://
 - Create a pyramid hologram with pyramids made of three and up to eight sides.
 - Load multiple images at once. This way you can show a different image on each side, giving the user a different hologram depending on the viewing angle.
 - Resize and move the images in their respective canvas to create perfect holograms with your pyramid.
+- Calculate the values you need to create the parts to build your n-sided pyramid.
+
+## How to use the calculator
+The calculator application asks you for three things:
+1) How many sides your desired pyramid has.
+2) The height of each trapez./The space between the bottom and the top line.
+3) The length of the smaller side of the bottom and top line./The length of the ground side of your desired pyramid.
+
+The application then gives you the following information:
+1) The length of the top and the bottom line.
+2) The height offset/y-offset between those two lines.
+3) The x-offset/offset in the direction of the lines between those two.
+4) The angle of the lines connecting those two lines (sides+1) times.
+5) The size of the area you will need if you lay all the trapezes next to each other.
 
 ## What will be added to this project in the future
 - add support for gif-files
 - possibility to control position and size of each image independently
+- automatically draw a template for the parts after using the calculator
