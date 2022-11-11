@@ -17,6 +17,19 @@
 <body>
     <div id="options">
         <div class="framed">
+            <label for="store">Store your current settings here:</label>
+            <button type="button" onclick="storeSettings()">Store settings</button>
+
+            <br>
+            <br>
+
+            <label for="load">Load your settings from a file:</label><br>
+            <input type="file" id="settingsLoader" accept=".txt" onchange="loadSettings(event)" hidden>
+            <button type="button" onclick="document.getElementById('settingsLoader').click()">Load settings</button>
+            <input type="text" readonly id="settingsLabel" class="wideSlider">
+        </div>
+
+        <div class="framed">
             <label for="fileChooser">Choose an image to display:</label> <br>
             <input type="file" id="fileChooser" accept="image/png, image/jpeg" multiple onchange="loadImage(event)">
         </div>

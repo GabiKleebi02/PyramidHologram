@@ -189,3 +189,70 @@ function linkTwoInputs(input1, input2, drawImagesOnUpdate) {
             drawImageOnCanvases();
     });
 }
+function storeSettings() {
+    // load the data which is to be stored
+    var imgPosition = getImagePosition(), imgScale = getImageScale() * 100, innerSpacing = getInnerSpacing(), sides = getSideCount();
+    // build the string
+    var text = buildKeyValueString(imgPosition, imgScale, innerSpacing, sides);
+    // store it
+    var link = document.createElement('a');
+    link.href = window.URL.createObjectURL(new Blob([text], { type: 'text/html' }));
+    link.download = "pyramid hologram settings.txt";
+    link.click();
+}
+function buildKeyValueString(pos, scale, square, sides) {
+    var text = "";
+    var variables = {
+        "position": pos,
+        "scale": scale,
+        "square": square,
+        "sides": sides
+    };
+    for (var property in variables) {
+        text += property + ':' + variables[property] + ';';
+    }
+    return text;
+}
+function loadSettings(event) {
+    var file = event.target.files[0];
+    if (!file)
+        return;
+    var reader = new FileReader();
+    reader.onload = function () {
+        var results = reader.result;
+        console.log(results);
+        if (!results)
+            return;
+        console.log(results);
+        var pairs = results.split(';');
+        pairs.pop();
+        var variables = {};
+        for (var i = 0; i < pairs.length; i++) {
+            var pair = pairs[i];
+            var keyvalue = pair.split(':');
+            variables[keyvalue[0]] = keyvalue[1];
+        }
+        if (!containsAllSettingsProps(variables))
+            return;
+        // set the values
+        spacingValueShow.value = String(variables['square']);
+        imageZoomValue.value = String(variables['scale']);
+        imagePosValue.value = String(variables['position']);
+        sideCountValue.value = String(variables['sides']);
+        // ...and trigger the events
+        var inputEvent = new Event('input');
+        spacingValueShow.dispatchEvent(inputEvent);
+        imageZoomValue.dispatchEvent(inputEvent);
+        imagePosValue.dispatchEvent(inputEvent);
+        sideCountValue.dispatchEvent(inputEvent);
+        // reset the settings file input to load the next file even when it is the same file
+        var target = event.target, name = target.value.split('\\').pop(), element = document.getElementById('settingsLabel');
+        target.value = '';
+        element.value = "Last loaded \"".concat(name, "\"");
+        element.style.width = element.value.length + 'ch';
+    };
+    reader.readAsText(file, 'utf-8');
+}
+function containsAllSettingsProps(values) {
+    return 'position' in values && 'scale' in values && 'square' in values && 'sides' in values;
+}

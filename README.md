@@ -33,3 +33,4 @@ The application then gives you the following information:
 - add support for gif-files
 - possibility to control position and size of each image independently
 - automatically draw a template for the parts after using the calculator
+- use centimeters or inches on the website to set the sizes of the squares
