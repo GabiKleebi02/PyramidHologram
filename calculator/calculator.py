@@ -62,7 +62,7 @@ def calculation():
     h = d / tan(gamma_r)
     h_tilted = h / cos(delta_r)
 
-    print(f'{h_tilted=}, {a=}, {b=}')
+    print_results(a, b, h_tilted)
 
     # return the results
     return a, b, h_tilted, sides
@@ -76,7 +76,6 @@ def concat_images(image: Image, count: int):
     img_w, img_h = image.size
     border = ceil(cm_to_px(2))  # border of the page (2 cm)
     page_w, page_h = floor(cm_to_px(21)), floor(cm_to_px(29.7))
-    page_size_w_inch, page_h_inch = page_w / 2.54, page_h / 2.54
     content_w, content_h = page_w - 2*border, page_h - 2*border
 
     horizontal_per_page, vertical_per_page = floor(content_w / img_w), floor(content_h / img_h)
@@ -89,9 +88,7 @@ def concat_images(image: Image, count: int):
     images_per_page = horizontal_per_page * vertical_per_page
     pages_count = ceil(count / images_per_page)
 
-    
-
-    pages = [Image.new('1', (page_w, page_h), 1) for i in range(0, pages_count)]
+    pages = [Image.new('RGB', (page_w, page_h), '#fff') for i in range(0, pages_count)]
 
     images_printed = 0
     stop = False
@@ -136,6 +133,20 @@ def draw(a: float, b: float, height: float, sides: int):
     # save the image
     image.save('single_trapeze.png')
     concat_images(image, sides)
+
+
+def to2Digits(number: float):
+    return float("{:.2f}".format(number))
+
+
+def print_results(a: float, b: float, h: float):
+    a, b, h = to2Digits(a), to2Digits(b), to2Digits(h)
+
+    print('\n---- RESULTS ----')
+    print(f'The small side of the trapeze is {a} units long.')
+    print(f'The long side of the trapeze is {b} units long.')
+    print(f'The vertical distance between those two lines is {h} units.')
+    print('-----------------\n')
 
 
 if __name__ == '__main__':
